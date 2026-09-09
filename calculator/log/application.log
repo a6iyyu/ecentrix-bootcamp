@@ -1,8 +1,0 @@
-2026-09-08 14:39:21.445 [main] INFO  c.b.calculator.CalculatorApplication - Starting CalculatorApplication using Java 25.0.4.1 with PID 16884 (D:\Intern\eCentrix\calculator\target\classes started by berkah in D:\Intern\eCentrix\calculator)
-2026-09-08 14:39:21.472 [main] DEBUG c.b.calculator.CalculatorApplication - Running with Spring Boot v4.1.1, Spring v7.0.9
-2026-09-08 14:39:21.474 [main] INFO  c.b.calculator.CalculatorApplication - No active profile set, falling back to 1 default profile: "default"
-2026-09-08 14:39:23.462 [main] INFO  c.b.calculator.CalculatorApplication - Started CalculatorApplication in 3.935 seconds (process running for 5.749)
-2026-09-08 14:39:25.536 [main] WARN  c.b.calculator.CalculatorApplication - An empty value isn't accepted, please try again.
-2026-09-08 14:39:30.199 [main] WARN  c.b.calculator.CalculatorApplication - Input is not a number, please try again
-2026-09-08 14:39:37.511 [main] WARN  c.b.calculator.CalculatorApplication - Operator 'p' is unknown, please try again
-2026-09-08 14:39:45.822 [main] INFO  c.b.calculator.CalculatorApplication - Multiplication of 1 x 13 = 13
