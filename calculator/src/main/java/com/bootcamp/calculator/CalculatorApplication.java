@@ -1,18 +1,15 @@
 package com.bootcamp.calculator;
 
 import java.util.Scanner;
-
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@Slf4j
 public class CalculatorApplication implements CommandLineRunner {
-    private static final Logger log = LoggerFactory.getLogger(CalculatorApplication.class);
-
     /**
      * The main entry point of the application.
      *

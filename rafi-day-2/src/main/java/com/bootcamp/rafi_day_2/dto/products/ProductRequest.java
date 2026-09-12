@@ -1,4 +1,4 @@
-package com.bootcamp.rafi_day_2.dto.Products;
+package com.bootcamp.rafi_day_2.dto.products;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;

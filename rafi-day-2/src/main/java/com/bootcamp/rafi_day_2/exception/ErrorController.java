@@ -1,9 +1,8 @@
 package com.bootcamp.rafi_day_2.exception;
 
-import com.bootcamp.rafi_day_2.dto.ApiResponse;
+import com.bootcamp.rafi_day_2.dto.common.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.apache.coyote.Response;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;

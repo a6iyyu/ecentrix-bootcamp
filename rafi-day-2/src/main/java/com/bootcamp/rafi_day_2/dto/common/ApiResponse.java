@@ -1,4 +1,4 @@
-package com.bootcamp.rafi_day_2.dto;
+package com.bootcamp.rafi_day_2.dto.common;
 
 import lombok.*;
 
@@ -15,6 +15,8 @@ import lombok.*;
 public class ApiResponse<T> {
     @Builder.Default
     private boolean success = true;
+
     private String message;
+
     private T data;
 }

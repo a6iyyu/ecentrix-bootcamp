@@ -1,7 +1,7 @@
 package com.bootcamp.rafi_day_2.controller;
 
-import com.bootcamp.rafi_day_2.dto.ApiResponse;
-import com.bootcamp.rafi_day_2.dto.Products.*;
+import com.bootcamp.rafi_day_2.dto.common.ApiResponse;
+import com.bootcamp.rafi_day_2.dto.products.*;
 import com.bootcamp.rafi_day_2.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

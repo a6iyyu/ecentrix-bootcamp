@@ -1,4 +1,4 @@
-package com.bootcamp.rafi_day_2.dto.Categories;
+package com.bootcamp.rafi_day_2.dto.categories;
 
 import lombok.*;
 

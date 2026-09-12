@@ -1,5 +1,7 @@
 package com.bootcamp.rafi_day_2.configuration;
 
+import com.bootcamp.rafi_day_2.controller.CategoryController;
+import com.bootcamp.rafi_day_2.controller.ProductController;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.models.GroupedOpenApi;
@@ -20,7 +22,10 @@ public class OpenApiConfiguration {
     @Bean
     public OpenAPI springOpenAPI() {
         return new OpenAPI().info(
-                new Info().title("API Documentation Demo Test").description("API Documentation Demo Test").version("v1.0.0")
+                new Info()
+                        .title("API Documentation Demo Test")
+                        .description("API Documentation Demo Test")
+                        .version("v1.0.0")
         );
     }
 
@@ -37,7 +42,7 @@ public class OpenApiConfiguration {
                 .builder()
                 .group("API A")
                 .pathsToMatch("/**")
-                .packagesToScan("com.bootcamp.rafi_day_2.controller")
+                .packagesToScan(CategoryController.class.getPackageName(), ProductController.class.getPackageName())
                 .build();
     }
 }
