@@ -5,7 +5,7 @@ import com.bootcamp.mini_project.services.CategoryService;
 import com.bootcamp.mini_project.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
@@ -25,24 +25,18 @@ public class Categories extends VerticalLayout {
     public Categories(CategoryService categoryService) {
         this.categoryService = categoryService;
 
-        addClassNames("p-8", "max-w-7xl", "mx-auto", "w-full", "gap-6");
+        setPadding(false);
+        setSpacing(false);
+        addClassNames("p-5", "max-w-7xl", "mx-auto", "w-full", "gap-4", "box-border", "overflow-x-hidden");
 
-        H2 title = new H2("Categories");
-        title.addClassNames("text-2xl", "font-semibold", "tracking-tight", "text-foreground");
-
-        Paragraph description = new Paragraph("Organize your products by managing inventory categories.");
-        description.addClassNames("text-sm", "text-muted-foreground");
-
-        VerticalLayout headerText = new VerticalLayout(title, description);
-        headerText.setPadding(false);
-        headerText.setSpacing(false);
+        VerticalLayout headerText = getHeaderText();
 
         Button addButton = new Button("+ Add Category", _ -> modalAction(null));
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addButton.addClassNames("bg-primary", "text-primary-foreground", "hover:bg-primary/90", "font-medium", "px-4", "py-2", "rounded-md", "transition-colors");
+        addButton.addClassNames("bg-primary", "text-primary-foreground", "hover:bg-primary/90", "font-medium", "px-3", "py-1.5", "rounded-md", "text-xs", "shrink-0");
 
         HorizontalLayout topBar = new HorizontalLayout(headerText, addButton);
-        topBar.addClassNames("w-full", "justify-between", "items-center");
+        topBar.addClassNames("w-full", "justify-between", "items-center", "gap-4");
 
         table();
 
@@ -50,26 +44,59 @@ public class Categories extends VerticalLayout {
         refreshGridData();
     }
 
-    private void table() {
-        grid.addClassNames("border", "border-border", "rounded-lg", "bg-card", "text-card-foreground");
+    private VerticalLayout getHeaderText() {
+        HorizontalLayout breadcrumb = createBreadcrumb();
 
-        grid.addColumn(CategoryResponse::getId).setHeader("ID").setAutoWidth(true);
-        grid.addColumn(CategoryResponse::getName).setHeader("Category Name").setAutoWidth(true);
-        grid.addColumn(CategoryResponse::getDescription).setHeader("Description").setAutoWidth(true);
+        H2 title = new H2("Categories");
+        title.addClassNames("m-0", "text-lg", "font-bold", "tracking-tight", "text-foreground");
+
+        Paragraph description = new Paragraph("Organize your products by managing inventory categories.");
+        description.addClassNames("m-0", "text-xs", "text-muted-foreground");
+
+        VerticalLayout headerText = new VerticalLayout(breadcrumb, title, description);
+        headerText.setPadding(false);
+        headerText.setSpacing(false);
+        headerText.addClassNames("gap-0.5");
+        return headerText;
+    }
+
+    private HorizontalLayout createBreadcrumb() {
+        HorizontalLayout breadcrumb = new HorizontalLayout();
+        breadcrumb.addClassNames("items-center", "gap-1.5", "text-[11px]", "text-muted-foreground");
+
+        RouterLink dashLink = new RouterLink("Dashboard", Dashboard.class);
+        dashLink.addClassNames("text-muted-foreground", "hover:text-foreground", "no-underline");
+
+        Span sep = new Span("/");
+        sep.addClassNames("text-muted-foreground/60");
+
+        Span current = new Span("Categories");
+        current.addClassNames("font-medium", "text-foreground");
+
+        breadcrumb.add(dashLink, sep, current);
+        return breadcrumb;
+    }
+
+    private void table() {
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addClassNames("border", "border-border", "rounded-md", "bg-card", "text-card-foreground", "w-full", "text-xs");
+        grid.addColumn(CategoryResponse::getId).setHeader("ID").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(CategoryResponse::getName).setHeader("Category Name").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(CategoryResponse::getDescription).setHeader("Description").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
 
         grid.addComponentColumn(category -> {
             Button editButton = new Button("Edit", _ -> modalAction(category));
             editButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            editButton.addClassNames("text-sm", "font-medium", "text-foreground", "hover:underline");
+            editButton.addClassNames("text-xs", "font-medium", "text-foreground", "hover:underline");
 
             Button deleteButton = new Button("Delete", _ -> modalDelete(category));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
-            deleteButton.addClassNames("text-sm", "font-medium", "text-destructive", "hover:underline");
+            deleteButton.addClassNames("text-xs", "font-medium", "text-destructive", "hover:underline");
 
             HorizontalLayout actions = new HorizontalLayout(editButton, deleteButton);
-            actions.addClassNames("gap-2");
+            actions.addClassNames("gap-2", "justify-center", "items-center", "w-full");
             return actions;
-        }).setHeader("Actions").setAutoWidth(true);
+        }).setHeader("Actions").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
     }
 
     private void refreshGridData() {
@@ -79,13 +106,14 @@ public class Categories extends VerticalLayout {
     private void modalAction(CategoryResponse existingCategory) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle(existingCategory == null ? "Create New Category" : "Edit Category");
+        dialog.setWidth("480px");
 
         TextField nameField = new TextField("Category Name");
         nameField.setRequired(true);
-        nameField.addClassNames("w-full");
+        nameField.addClassNames("w-full", "text-xs");
 
         TextArea descriptionField = new TextArea("Description");
-        descriptionField.addClassNames("w-full");
+        descriptionField.addClassNames("w-full", "text-xs");
 
         if (existingCategory != null) {
             nameField.setValue(existingCategory.getName() != null ? existingCategory.getName() : "");
@@ -93,11 +121,13 @@ public class Categories extends VerticalLayout {
         }
 
         VerticalLayout formLayout = new VerticalLayout(nameField, descriptionField);
-        formLayout.addClassNames("py-2", "w-80");
+        formLayout.setPadding(false);
+        formLayout.setSpacing(false);
+        formLayout.addClassNames("w-full", "gap-3", "py-2");
         dialog.add(formLayout);
 
         Button cancelButton = new Button("Cancel", _ -> dialog.close());
-        cancelButton.addClassNames("text-muted-foreground");
+        cancelButton.addClassNames("text-xs", "text-muted-foreground");
 
         Button saveButton = new Button("Save", _ -> {
             if (nameField.isEmpty()) {
@@ -105,10 +135,7 @@ public class Categories extends VerticalLayout {
                 return;
             }
 
-            CategoryRequest request = CategoryRequest.builder()
-                    .name(nameField.getValue())
-                    .description(descriptionField.getValue())
-                    .build();
+            CategoryRequest request = CategoryRequest.builder().name(nameField.getValue()).description(descriptionField.getValue()).build();
 
             try {
                 if (existingCategory == null) {
@@ -127,7 +154,7 @@ public class Categories extends VerticalLayout {
         });
 
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.addClassNames("bg-primary", "text-primary-foreground");
+        saveButton.addClassNames("bg-primary", "text-primary-foreground", "text-xs");
 
         dialog.getFooter().add(cancelButton, saveButton);
         dialog.open();
@@ -138,9 +165,11 @@ public class Categories extends VerticalLayout {
         confirmDialog.setHeaderTitle("Delete Category");
 
         Paragraph text = new Paragraph("Are you sure you want to delete category '" + category.getName() + "'?");
+        text.addClassNames("text-xs");
         confirmDialog.add(text);
 
         Button cancelButton = new Button("Cancel", _ -> confirmDialog.close());
+        cancelButton.addClassNames("text-xs");
 
         Button deleteButton = new Button("Delete", _ -> {
             try {
@@ -154,7 +183,7 @@ public class Categories extends VerticalLayout {
         });
 
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-        deleteButton.addClassNames("bg-destructive", "text-destructive-foreground");
+        deleteButton.addClassNames("bg-destructive", "text-destructive-foreground", "text-xs");
 
         confirmDialog.getFooter().add(cancelButton, deleteButton);
         confirmDialog.open();

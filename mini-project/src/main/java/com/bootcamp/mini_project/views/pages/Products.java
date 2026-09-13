@@ -8,7 +8,7 @@ import com.bootcamp.mini_project.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
@@ -35,24 +35,18 @@ public class Products extends VerticalLayout {
         this.categoryService = categoryService;
         this.supplierService = supplierService;
 
-        addClassNames("p-8", "max-w-7xl", "mx-auto", "w-full", "gap-6");
+        setPadding(false);
+        setSpacing(false);
+        addClassNames("p-5", "max-w-7xl", "mx-auto", "w-full", "gap-4", "box-border", "overflow-x-hidden");
 
-        H2 title = new H2("Products");
-        title.addClassNames("text-2xl", "font-semibold", "tracking-tight", "text-foreground");
-
-        Paragraph description = new Paragraph("Manage inventory items, pricing, stock levels, and vendor mappings.");
-        description.addClassNames("text-sm", "text-muted-foreground");
-
-        VerticalLayout headerText = new VerticalLayout(title, description);
-        headerText.setPadding(false);
-        headerText.setSpacing(false);
+        VerticalLayout headerText = getHeaderText();
 
         Button addButton = new Button("+ Add Product", _ -> modalAction(null));
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addButton.addClassNames("bg-primary", "text-primary-foreground", "hover:bg-primary/90", "font-medium", "px-4", "py-2", "rounded-md", "transition-colors");
+        addButton.addClassNames("bg-primary", "text-primary-foreground", "hover:bg-primary/90", "font-medium", "px-3", "py-1.5", "rounded-md", "text-xs", "shrink-0");
 
         HorizontalLayout topBar = new HorizontalLayout(headerText, addButton);
-        topBar.addClassNames("w-full", "justify-between", "items-center");
+        topBar.addClassNames("w-full", "justify-between", "items-center", "gap-4");
 
         table();
 
@@ -60,29 +54,63 @@ public class Products extends VerticalLayout {
         refreshGridData();
     }
 
-    private void table() {
-        grid.addClassNames("border", "border-border", "rounded-lg", "bg-card", "text-card-foreground");
+    private VerticalLayout getHeaderText() {
+        HorizontalLayout breadcrumb = createBreadcrumb();
 
-        grid.addColumn(ProductResponse::getId).setHeader("ID").setAutoWidth(true);
-        grid.addColumn(ProductResponse::getName).setHeader("Product Name").setAutoWidth(true);
-        grid.addColumn(product -> product.getPrice() != null ? "Rp " + product.getPrice() : "-").setHeader("Price").setAutoWidth(true);
-        grid.addColumn(ProductResponse::getStock).setHeader("Stock").setAutoWidth(true);
-        grid.addColumn(product -> product.getCategoryName() != null ? product.getCategoryName() : "-").setHeader("Category").setAutoWidth(true);
-        grid.addColumn(product -> product.getSupplierName() != null ? product.getSupplierName() : "-").setHeader("Supplier").setAutoWidth(true);
+        H2 title = new H2("Products");
+        title.addClassNames("m-0", "text-lg", "font-bold", "tracking-tight", "text-foreground");
+
+        Paragraph description = new Paragraph("Manage inventory items, pricing, stock levels, and vendor mappings.");
+        description.addClassNames("m-0", "text-xs", "text-muted-foreground");
+
+        VerticalLayout headerText = new VerticalLayout(breadcrumb, title, description);
+        headerText.setPadding(false);
+        headerText.setSpacing(false);
+        headerText.addClassNames("gap-0.5");
+        return headerText;
+    }
+
+    private HorizontalLayout createBreadcrumb() {
+        HorizontalLayout breadcrumb = new HorizontalLayout();
+        breadcrumb.addClassNames("items-center", "gap-1.5", "text-[11px]", "text-muted-foreground");
+
+        RouterLink dashLink = new RouterLink("Dashboard", Dashboard.class);
+        dashLink.addClassNames("text-muted-foreground", "hover:text-foreground", "no-underline");
+
+        Span sep = new Span("/");
+        sep.addClassNames("text-muted-foreground/60");
+
+        Span current = new Span("Products");
+        current.addClassNames("font-medium", "text-foreground");
+
+        breadcrumb.add(dashLink, sep, current);
+        return breadcrumb;
+    }
+
+    private void table() {
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addClassNames("border", "border-border", "rounded-md", "bg-card", "text-card-foreground", "w-full", "text-xs");
+
+        grid.addColumn(ProductResponse::getId).setHeader("ID").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(ProductResponse::getName).setHeader("Product Name").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(product -> product.getPrice() != null ? "Rp " + product.getPrice() : "-").setHeader("Price").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(ProductResponse::getStock).setHeader("Stock").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(product -> product.getCategoryName() != null ? product.getCategoryName() : "-").setHeader("Category").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(product -> product.getSupplierName() != null ? product.getSupplierName() : "-").setHeader("Supplier").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
 
         grid.addComponentColumn(product -> {
             Button editButton = new Button("Edit", _ -> modalAction(product));
             editButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            editButton.addClassNames("text-sm", "font-medium", "text-foreground", "hover:underline");
+            editButton.addClassNames("text-xs", "font-medium", "text-foreground", "hover:underline");
 
             Button deleteButton = new Button("Delete", _ -> modalDelete(product));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
-            deleteButton.addClassNames("text-sm", "font-medium", "text-destructive", "hover:underline");
+            deleteButton.addClassNames("text-xs", "font-medium", "text-destructive", "hover:underline");
 
             HorizontalLayout actions = new HorizontalLayout(editButton, deleteButton);
-            actions.addClassNames("gap-2");
+            actions.addClassNames("gap-2", "justify-center", "items-center", "w-full");
             return actions;
-        }).setHeader("Actions").setAutoWidth(true);
+        }).setHeader("Actions").setAutoWidth(true).setTextAlign(ColumnTextAlign.CENTER);
     }
 
     private void refreshGridData() {
@@ -92,36 +120,43 @@ public class Products extends VerticalLayout {
     private void modalAction(ProductResponse existingProduct) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle(existingProduct == null ? "Create New Product" : "Edit Product");
+        dialog.setWidth("540px");
 
         TextField nameField = new TextField("Product Name");
         nameField.setRequired(true);
-        nameField.addClassNames("w-full");
+        nameField.addClassNames("w-full", "text-xs");
 
         BigDecimalField priceField = new BigDecimalField("Price (IDR)");
         priceField.setRequired(true);
-        priceField.addClassNames("w-full");
+        priceField.addClassNames("w-full", "text-xs");
 
         IntegerField stockField = new IntegerField("Stock Quantity");
         stockField.setRequired(true);
         stockField.setMin(0);
-        stockField.addClassNames("w-full");
+        stockField.addClassNames("w-full", "text-xs");
+
+        HorizontalLayout priceStockRow = new HorizontalLayout(priceField, stockField);
+        priceStockRow.addClassNames("w-full", "gap-3");
 
         List<CategoryResponse> categories = categoryService.getAllCategories(PageRequest.of(0, 200)).getContent();
         ComboBox<CategoryResponse> categorySelect = new ComboBox<>("Category");
         categorySelect.setItems(categories);
         categorySelect.setItemLabelGenerator(CategoryResponse::getName);
         categorySelect.setRequired(true);
-        categorySelect.addClassNames("w-full");
+        categorySelect.addClassNames("w-full", "text-xs");
 
         List<SupplierResponse> suppliers = supplierService.getAllSuppliers(PageRequest.of(0, 200)).getContent();
         ComboBox<SupplierResponse> supplierSelect = new ComboBox<>("Supplier (Optional)");
         supplierSelect.setItems(suppliers);
         supplierSelect.setItemLabelGenerator(SupplierResponse::getName);
         supplierSelect.setClearButtonVisible(true);
-        supplierSelect.addClassNames("w-full");
+        supplierSelect.addClassNames("w-full", "text-xs");
+
+        HorizontalLayout categorySupplierRow = new HorizontalLayout(categorySelect, supplierSelect);
+        categorySupplierRow.addClassNames("w-full", "gap-3");
 
         TextArea descriptionField = new TextArea("Description");
-        descriptionField.addClassNames("w-full");
+        descriptionField.addClassNames("w-full", "text-xs");
 
         if (existingProduct != null) {
             nameField.setValue(existingProduct.getName() != null ? existingProduct.getName() : "");
@@ -140,12 +175,14 @@ public class Products extends VerticalLayout {
                     .ifPresent(supplierSelect::setValue);
         }
 
-        VerticalLayout formLayout = new VerticalLayout(nameField, priceField, stockField, categorySelect, supplierSelect, descriptionField);
-        formLayout.addClassNames("py-2", "w-96");
+        VerticalLayout formLayout = new VerticalLayout(nameField, priceStockRow, categorySupplierRow, descriptionField);
+        formLayout.setPadding(false);
+        formLayout.setSpacing(false);
+        formLayout.addClassNames("w-full", "gap-3", "py-2");
         dialog.add(formLayout);
 
         Button cancelButton = new Button("Cancel", _ -> dialog.close());
-        cancelButton.addClassNames("text-muted-foreground");
+        cancelButton.addClassNames("text-xs", "text-muted-foreground");
 
         Button saveButton = new Button("Save", _ -> {
             if (nameField.isEmpty() || priceField.isEmpty() || stockField.isEmpty() || categorySelect.isEmpty()) {
@@ -183,7 +220,7 @@ public class Products extends VerticalLayout {
         });
 
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.addClassNames("bg-primary", "text-primary-foreground");
+        saveButton.addClassNames("bg-primary", "text-primary-foreground", "text-xs");
 
         dialog.getFooter().add(cancelButton, saveButton);
         dialog.open();
@@ -194,9 +231,11 @@ public class Products extends VerticalLayout {
         confirmDialog.setHeaderTitle("Delete Product");
 
         Paragraph text = new Paragraph("Are you sure you want to delete product '" + product.getName() + "'?");
+        text.addClassNames("text-xs");
         confirmDialog.add(text);
 
         Button cancelButton = new Button("Cancel", _ -> confirmDialog.close());
+        cancelButton.addClassNames("text-xs");
 
         Button deleteButton = new Button("Delete", _ -> {
             try {
@@ -211,7 +250,7 @@ public class Products extends VerticalLayout {
         });
 
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-        deleteButton.addClassNames("bg-destructive", "text-destructive-foreground");
+        deleteButton.addClassNames("bg-destructive", "text-destructive-foreground", "text-xs");
 
         confirmDialog.getFooter().add(cancelButton, deleteButton);
         confirmDialog.open();

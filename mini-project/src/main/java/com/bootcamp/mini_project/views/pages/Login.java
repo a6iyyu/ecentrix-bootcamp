@@ -13,7 +13,8 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 
 /**
- * Standalone Login View page designed with a centered Shadcn card UI layout and ambient glow background.
+ * Standalone Login View page with compact card width, precise grid-centered footer,
+ * consistent rounded-md borders, and ambient glow background.
  */
 @PageTitle("Login | Mini POS")
 @Route("login")
@@ -24,55 +25,85 @@ public class Login extends VerticalLayout {
     public Login(AuthService authService) {
         this.authService = authService;
 
-        addClassNames("relative", "overflow-hidden", "min-h-screen", "w-full", "flex", "items-center", "justify-center", "bg-background", "p-4");
+        addClassNames("relative", "flex", "min-h-screen", "w-full", "items-center", "justify-center", "overflow-hidden", "bg-background", "p-4", "md:p-8");
+
+        setPadding(false);
+        setSpacing(false);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         Span glowTopLeft = new Span();
-        glowTopLeft.addClassNames("pointer-events-none", "absolute", "-top-32", "-left-32", "size-96", "rounded-full", "bg-indigo-500/10", "blur-3xl", "dark:bg-indigo-500/15");
+        glowTopLeft.addClassNames("pointer-events-none", "absolute", "-top-32", "-left-32", "size-80", "md:size-[420px]", "xl:size-[520px]", "rounded-full", "bg-indigo-500/20", "blur-[120px]", "dark:bg-indigo-500/25");
 
         Span glowBottomRight = new Span();
-        glowBottomRight.addClassNames("pointer-events-none", "absolute", "-right-32", "-bottom-32", "size-96", "rounded-full", "bg-purple-500/10", "blur-3xl", "dark:bg-purple-500/15");
+        glowBottomRight.addClassNames("pointer-events-none", "absolute", "-right-32", "-bottom-32", "size-80", "md:size-[420px]", "xl:size-[520px]", "rounded-full", "bg-purple-500/20", "blur-[120px]", "dark:bg-purple-500/25");
+
+        Div content = new Div();
+        content.addClassNames("relative", "z-10", "w-full", "max-w-sm", "md:max-w-[380px]", "space-y-6");
+
+        Div header = createHeader();
 
         Div card = new Div();
-        card.addClassNames("relative", "z-10", "w-full", "max-w-md", "bg-card", "border", "border-border", "rounded-xl", "p-8", "shadow-sm", "space-y-6");
+        card.addClassNames("w-full", "rounded-md", "border", "border-border", "bg-card/80", "p-6", "md:p-8", "shadow-sm", "backdrop-blur-md");
 
-        VerticalLayout headerLayout = cardHeaderSection();
+        Div cardHeader = createCardHeader();
 
         TextField emailField = new TextField("Email Address");
         emailField.setRequired(true);
         emailField.setPlaceholder("admin@mail.com");
-        emailField.addClassNames("w-full");
+        emailField.addClassNames("w-full", "text-xs");
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.setRequired(true);
         passwordField.setPlaceholder("••••••••");
-        passwordField.addClassNames("w-full");
+        passwordField.addClassNames("w-full", "text-xs");
 
-        Button loginBtn = new Button("Sign In", _ -> processLogin(emailField.getValue(), passwordField.getValue()));
-        loginBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        loginBtn.addClassNames("w-full", "bg-primary", "text-primary-foreground", "hover:bg-primary/90", "font-medium", "py-2.5", "rounded-md", "transition-colors", "mt-2");
+        Button loginButton = new Button("Sign In", _ -> processLogin(emailField.getValue(), passwordField.getValue()));
+        loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        loginButton.addClassNames("h-10", "w-full", "rounded-md", "bg-primary", "px-4", "py-3", "text-xs", "font-semibold", "text-primary-foreground", "shadow-sm", "transition-colors", "hover:bg-primary/90", "focus-visible:outline-none", "focus-visible:ring-2", "focus-visible:ring-ring", "focus-visible:ring-offset-2");
 
-        VerticalLayout formLayout = new VerticalLayout(emailField, passwordField, loginBtn);
+        VerticalLayout formLayout = new VerticalLayout(emailField, passwordField, loginButton);
         formLayout.setPadding(false);
-        formLayout.addClassNames("gap-4", "w-full");
+        formLayout.setSpacing(false);
+        formLayout.addClassNames("w-full", "gap-4");
 
-        card.add(headerLayout, formLayout);
-        add(glowTopLeft, glowBottomRight, card);
+        Div footer = new Div();
+        footer.addClassNames("w-full", "grid", "place-items-center", "pt-2");
+
+        Paragraph footerText = new Paragraph("© 2026 Rafi Abiyyu Airlangga. All rights reserved.");
+        footerText.addClassNames("m-0", "text-center", "text-[11px]", "md:text-xs", "text-muted-foreground");
+
+        footer.add(footerText);
+        card.add(cardHeader, formLayout);
+        content.add(header, card, footer);
+        add(glowTopLeft, glowBottomRight, content);
     }
 
-    private VerticalLayout cardHeaderSection() {
+    private Div createCardHeader() {
+        Div cardHeader = new Div();
+        cardHeader.addClassNames("flex", "flex-col", "gap-1", "pb-6");
+
         H2 title = new H2("Welcome back");
-        title.addClassNames("text-2xl", "font-semibold", "tracking-tight", "text-foreground");
+        title.addClassNames("m-0", "text-xl", "md:text-2xl", "font-bold", "tracking-tight", "text-foreground");
 
         Paragraph subtitle = new Paragraph("Enter your credentials to sign in to your POS account.");
-        subtitle.addClassNames("text-sm", "text-muted-foreground");
+        subtitle.addClassNames("m-0", "text-xs", "md:text-sm", "leading-relaxed", "text-muted-foreground");
+        cardHeader.add(title, subtitle);
+        return cardHeader;
+    }
 
-        VerticalLayout headerLayout = new VerticalLayout(title, subtitle);
-        headerLayout.setPadding(false);
-        headerLayout.setSpacing(false);
-        headerLayout.addClassNames("gap-1");
-        return headerLayout;
+    private Div createHeader() {
+        Div header = new Div();
+        header.addClassNames("flex", "flex-col", "items-center", "justify-center", "text-center", "gap-1", "pb-2");
+
+        H1 brandTitle = new H1("Mini POS");
+        brandTitle.addClassNames("m-0", "text-2xl", "md:text-3xl", "font-bold", "tracking-tight", "text-foreground");
+
+        Paragraph brandSubtitle = new Paragraph("Manage your point of sale with ease.");
+        brandSubtitle.addClassNames("m-0", "text-xs", "md:text-sm", "leading-relaxed", "text-muted-foreground");
+
+        header.add(brandTitle, brandSubtitle);
+        return header;
     }
 
     private void processLogin(String email, String password) {
@@ -87,7 +118,6 @@ public class Login extends VerticalLayout {
 
             if (response != null && response.getAccessToken() != null) {
                 VaadinSession.getCurrent().setAttribute("jwt_token", response.getAccessToken());
-                System.out.println("[DEBUG JWT] " + response.getAccessToken());
             }
 
             Notification.show("Login successful!", 2000, Notification.Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
