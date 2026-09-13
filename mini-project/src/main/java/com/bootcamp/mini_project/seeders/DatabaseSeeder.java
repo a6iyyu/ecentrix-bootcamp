@@ -41,6 +41,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         admin.setPassword(passwordEncoder.encode(adminPassword));
 
         userRepository.save(admin);
+        log.info("[SEEDER] Admin username: {}", adminUsername);
+        log.info("[SEEDER] Admin password configured: {}", !adminPassword.equals("admin123"));
         log.info("[SEEDER] Default admin user successfully created!");
     }
 }

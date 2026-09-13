@@ -87,6 +87,7 @@ public class Login extends VerticalLayout {
 
             if (response != null && response.getAccessToken() != null) {
                 VaadinSession.getCurrent().setAttribute("jwt_token", response.getAccessToken());
+                System.out.println("[DEBUG JWT] " + response.getAccessToken());
             }
 
             Notification.show("Login successful!", 2000, Notification.Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_SUCCESS);

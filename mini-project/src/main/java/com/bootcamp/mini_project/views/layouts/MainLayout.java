@@ -4,7 +4,6 @@ import com.bootcamp.mini_project.views.pages.*;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.*;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.page.*;
@@ -15,7 +14,6 @@ import com.vaadin.flow.router.RouterLink;
  * Integrates Tailwind/Shadcn UI styling tokens, top navigation bar,
  * and Server Push support for real-time Kafka metrics updates.
  */
-@StyleSheet("./styles.css")
 public class MainLayout extends AppLayout {
     public MainLayout() {
         Span brandText = new Span("Mini POS");

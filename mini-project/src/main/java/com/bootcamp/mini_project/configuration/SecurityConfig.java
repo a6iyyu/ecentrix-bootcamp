@@ -34,8 +34,23 @@ public class SecurityConfig {
                     .csrf(AbstractHttpConfigurer::disable)
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**")
-                            .permitAll()
+                            .requestMatchers(
+                                    "/login",
+                                    "/auth/**",
+                                    "/",
+                                    "/dashboard",
+                                    "/styles.css",
+                                    "/VAADIN/**",
+                                    "/vaadinServlet/**",
+                                    "/frontend/**",
+                                    "/webjars/**",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html",
+                                    "/api-docs/**",
+                                    "/api-docs",
+                                    "/scalar-ui",
+                                    "/scalar-ui/**"
+                            ).permitAll()
                             .anyRequest()
                             .authenticated()
                     )

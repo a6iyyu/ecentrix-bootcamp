@@ -60,6 +60,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String username = claims.getSubject();
 
+            log.info("[AUTH FILTER] JWT validation SUCCESS");
+            log.info("[AUTH FILTER] Subject: {}", username);
+            log.info("[AUTH FILTER] Expiration: {}", claims.getExpiration());
+
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

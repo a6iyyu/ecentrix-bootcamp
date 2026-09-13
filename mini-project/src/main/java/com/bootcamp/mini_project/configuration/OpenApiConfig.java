@@ -35,7 +35,6 @@ public class OpenApiConfig {
     public GroupedOpenApi authGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Authentication")
-                .pathsToMatch("/api/v1/auth/**")
                 .packagesToScan(AuthController.class.getPackageName())
                 .build();
     }
@@ -49,7 +48,6 @@ public class OpenApiConfig {
     public GroupedOpenApi categoryGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Categories")
-                .pathsToMatch("/api/v1/categories/**")
                 .packagesToScan(CategoryController.class.getPackageName())
                 .build();
     }
@@ -63,7 +61,6 @@ public class OpenApiConfig {
     public GroupedOpenApi productGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Products")
-                .pathsToMatch("/api/v1/products/**")
                 .packagesToScan(ProductController.class.getPackageName())
                 .build();
     }
@@ -72,7 +69,6 @@ public class OpenApiConfig {
     public GroupedOpenApi reportGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Reports")
-                .pathsToMatch("/api/v1/reports/**")
                 .packagesToScan(ReportController.class.getPackageName())
                 .build();
     }
@@ -86,7 +82,6 @@ public class OpenApiConfig {
     public GroupedOpenApi supplierGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Suppliers")
-                .pathsToMatch("/api/v1/suppliers/**")
                 .packagesToScan(SupplierController.class.getPackageName())
                 .build();
     }
@@ -100,7 +95,6 @@ public class OpenApiConfig {
     public GroupedOpenApi transactionGroupApi() {
         return GroupedOpenApi.builder()
                 .group("Transactions")
-                .pathsToMatch("/api/v1/transactions/**")
                 .packagesToScan(TransactionController.class.getPackageName())
                 .build();
     }

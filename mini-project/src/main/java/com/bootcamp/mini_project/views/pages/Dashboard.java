@@ -10,8 +10,11 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinSession;
+
 import java.math.BigDecimal;
 import java.util.Objects;
+
 import org.springframework.data.domain.PageRequest;
 
 /**
@@ -22,7 +25,16 @@ import org.springframework.data.domain.PageRequest;
 @Route(value = "dashboard", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @SuppressWarnings(CompilerWarnings.UNUSED)
-public class Dashboard extends VerticalLayout {
+public class Dashboard extends VerticalLayout implements BeforeEnterObserver {
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        String token = (String) VaadinSession.getCurrent().getAttribute("jwt_token");
+
+        if (token == null || token.isBlank()) {
+            event.forwardTo("login");
+        }
+    }
+
     private final ReportService reportService;
     private final Grid<SalesReportResponse> salesGrid = new Grid<>(SalesReportResponse.class, false);
     private final Grid<StockLogResponse> stockLogGrid = new Grid<>(StockLogResponse.class, false);

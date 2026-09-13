@@ -4,8 +4,14 @@ import com.bootcamp.mini_project.dto.auth.*;
 import com.bootcamp.mini_project.entity.User;
 import com.bootcamp.mini_project.exceptions.custom.ResourceNotFoundException;
 import com.bootcamp.mini_project.repositories.UserRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.UUID;
+import java.util.Date;
+import javax.crypto.SecretKey;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,20 +20,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Handles authentication operations including user login validation,
- * JWT token generation, and Redis token blacklisting for logouts.
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final StringRedisTemplate redisTemplate;
 
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     /**
      * Authenticates a user with provided credentials and generates an access token.
@@ -51,7 +57,16 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid email or password.");
         }
 
-        String generatedToken = UUID.randomUUID().toString();
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + jwtExpirationMs);
+
+        String generatedToken = Jwts.builder()
+                .subject(user.getEmail())
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(key)
+                .compact();
 
         log.info("[AUTH SUCCESS] User ID {} logged in successfully.", user.getId());
 
