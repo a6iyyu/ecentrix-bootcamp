@@ -93,6 +93,13 @@ public class CategoryService {
             return new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
+        String oldName = category.getName();
+
+        if (!oldName.equalsIgnoreCase(request.getName()) && categoryRepository.existsByName(request.getName())) {
+            log.warn("[CATEGORY DUPLICATE] Update failed. Name '{}' already exists.", request.getName());
+            throw new IllegalArgumentException("Category name already exists: " + request.getName());
+        }
+
         category.setName(request.getName());
         category.setDescription(request.getDescription());
 
